@@ -4,4 +4,4 @@
 
 An Atom package to japanize word boundary.
 
-![screenshot](/assets/japanese-word-selection.gif)
+![screenshot](https://github.com/kaitoy/japanese-word-selection/raw/master/assets/japanese-word-selection.gif)
