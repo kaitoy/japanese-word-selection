@@ -1,19 +1,17 @@
 {
   "name": "japanese-word-selection",
   "main": "./lib/japanese-word-selection",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Japanize word boundary.",
   "keywords": [
     "japanese",
     "selection",
     "word"
   ],
-
   "repository": "https://github.com/kaitoy/japanese-word-selection",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
