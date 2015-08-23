@@ -7,7 +7,8 @@ module.exports = JapaneseWordSelection =
   activate: ->
     @disposables = new CompositeDisposable
     @disposables.add atom.workspace.observeTextEditors (editor) ->
-      JapaneseWordSelection.japanizeWordBoundary(editor, cursor) for cursor in editor.getCursors()
+      JapaneseWordSelection.disposables.add editor.observeCursors (cursor) ->
+        JapaneseWordSelection.japanizeWordBoundary(editor, cursor)
 
   japanizeWordBoundary: (editor, cursor) ->
     cursor.orgGetBeginningOfCurrentWordBufferPosition = cursor.getBeginningOfCurrentWordBufferPosition
