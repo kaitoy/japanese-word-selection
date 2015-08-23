@@ -8,19 +8,19 @@ module.exports = JapaneseWordSelection =
     @disposables = new CompositeDisposable
     @disposables.add atom.workspace.observeTextEditors (editor) ->
       JapaneseWordSelection.disposables.add editor.observeCursors (cursor) ->
-        JapaneseWordSelection.japanizeWordBoundary(editor, cursor)
+        JapaneseWordSelection.japanizeWordBoundary(cursor)
 
-  japanizeWordBoundary: (editor, cursor) ->
+  japanizeWordBoundary: (cursor) ->
     cursor.orgGetBeginningOfCurrentWordBufferPosition = cursor.getBeginningOfCurrentWordBufferPosition
     cursor.getBeginningOfCurrentWordBufferPosition =  (options = {}) ->
       allowPrevious = options.allowPrevious ? true
       currentBufferPosition = @getBufferPosition()
-      previousNonBlankRow = editor.buffer.previousNonBlankRow(currentBufferPosition.row) ? 0
+      previousNonBlankRow = @editor.buffer.previousNonBlankRow(currentBufferPosition.row) ? 0
       scanRange = [[previousNonBlankRow, 0], currentBufferPosition]
 
-      regex = JapaneseWordSelection.getRegex(editor, cursor, options, false)
+      regex = JapaneseWordSelection.getRegex(@editor, @, options, false)
       beginningOfWordPosition = null
-      editor.backwardsScanInBufferRange regex, scanRange, ({range, stop}) ->
+      @editor.backwardsScanInBufferRange regex, scanRange, ({range, stop}) ->
         if range.end.isGreaterThanOrEqual(currentBufferPosition) or allowPrevious
           beginningOfWordPosition = range.start
         if not beginningOfWordPosition?.isEqual(currentBufferPosition)
@@ -39,7 +39,7 @@ module.exports = JapaneseWordSelection =
       currentBufferPosition = @getBufferPosition()
       scanRange = [currentBufferPosition, @editor.getEofBufferPosition()]
 
-      regex = JapaneseWordSelection.getRegex(editor, cursor, options, true)
+      regex = JapaneseWordSelection.getRegex(@editor, @, options, true)
       endOfWordPosition = null
       @editor.scanInBufferRange regex, scanRange, ({range, stop}) ->
         if allowNext
