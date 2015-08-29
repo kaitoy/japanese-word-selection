@@ -17,6 +17,10 @@ describe 'JapaneseWordSelection', ->
                             ああああ穂毛んんんん
                             ああああhogeんんんん
                             ああああ1234んんんん
+                            ほげ、Hoge、ほげ
+                            ホゲ・Hoge・ホゲ
+                            穂毛。Hoge。穂毛
+                            ほげ「Hoge」ほげ
                             ''')
 
   describe 'Hiragana-Katakana-Hiragana', ->
@@ -272,3 +276,207 @@ describe 'JapaneseWordSelection', ->
       editor.moveRight(12)
       editor.selectToBeginningOfWord()
       expect(editor.getSelectedText() ).toEqual('んんんん')
+
+  describe 'ほげ、Hoge、ほげ', ->
+    beforeEach ->
+      runs ->
+        editor.moveToTop()
+        editor.moveDown(5)
+        editor.moveToBeginningOfLine()
+
+    it 'selects the first ほげ from the left edge', ->
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the first ほげ from the middle of it', ->
+      editor.moveRight(1)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the first ほげ from the right edge', ->
+      editor.moveRight(2)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the Hoge from the left edge', ->
+      editor.moveRight(3)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the Hoge from the middle of it', ->
+      editor.moveRight(5)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the Hoge from the right edge', ->
+      editor.moveRight(7)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the second ほげ from the left edge', ->
+      editor.moveRight(8)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the second ほげ from the middle of it', ->
+      editor.moveRight(9)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the second Hほげ from the right edge', ->
+      editor.moveRight(10)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+  describe 'ほげ・Hoge・ほげ', ->
+    beforeEach ->
+      runs ->
+        editor.moveToTop()
+        editor.moveDown(6)
+        editor.moveToBeginningOfLine()
+
+    it 'selects the first ほげ from the left edge', ->
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ホゲ')
+
+    it 'selects the first ほげ from the middle of it', ->
+      editor.moveRight(1)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('ホゲ')
+
+    it 'selects the first ほげ from the right edge', ->
+      editor.moveRight(2)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('ホゲ')
+
+    it 'selects the Hoge from the left edge', ->
+      editor.moveRight(3)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the Hoge from the middle of it', ->
+      editor.moveRight(5)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the Hoge from the right edge', ->
+      editor.moveRight(7)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the second ほげ from the left edge', ->
+      editor.moveRight(8)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ホゲ')
+
+    it 'selects the second ほげ from the middle of it', ->
+      editor.moveRight(9)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('ホゲ')
+
+    it 'selects the second Hほげ from the right edge', ->
+      editor.moveRight(10)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('ホゲ')
+
+  describe 'ほげ。Hoge。ほげ', ->
+    beforeEach ->
+      runs ->
+        editor.moveToTop()
+        editor.moveDown(7)
+        editor.moveToBeginningOfLine()
+
+    it 'selects the first ほげ from the left edge', ->
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('穂毛')
+
+    it 'selects the first ほげ from the middle of it', ->
+      editor.moveRight(1)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('穂毛')
+
+    it 'selects the first ほげ from the right edge', ->
+      editor.moveRight(2)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('穂毛')
+
+    it 'selects the Hoge from the left edge', ->
+      editor.moveRight(3)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the Hoge from the middle of it', ->
+      editor.moveRight(5)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the Hoge from the right edge', ->
+      editor.moveRight(7)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the second ほげ from the left edge', ->
+      editor.moveRight(8)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('穂毛')
+
+    it 'selects the second ほげ from the middle of it', ->
+      editor.moveRight(9)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('穂毛')
+
+    it 'selects the second Hほげ from the right edge', ->
+      editor.moveRight(10)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('穂毛')
+
+  describe 'ほげ「Hoge」ほげ', ->
+    beforeEach ->
+      runs ->
+        editor.moveToTop()
+        editor.moveDown(8)
+        editor.moveToBeginningOfLine()
+
+    it 'selects the first ほげ from the left edge', ->
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the first ほげ from the middle of it', ->
+      editor.moveRight(1)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the first ほげ from the right edge', ->
+      editor.moveRight(2)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the Hoge from the left edge', ->
+      editor.moveRight(3)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the Hoge from the middle of it', ->
+      editor.moveRight(5)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the Hoge from the right edge', ->
+      editor.moveRight(7)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the second ほげ from the left edge', ->
+      editor.moveRight(8)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the second ほげ from the middle of it', ->
+      editor.moveRight(9)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the second Hほげ from the right edge', ->
+      editor.moveRight(10)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')

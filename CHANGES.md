@@ -1,6 +1,7 @@
 0.2.0
 ====
 * Fix a bug where japanizing word boundary is not done on cursors added after a text editor is opened.
+* Support some punctuations and symbols such as "。", "、", "・", "「", and "」".
 
 0.1.0 - First Release
 =============

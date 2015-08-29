@@ -58,14 +58,21 @@ module.exports = JapaneseWordSelection =
     col = if forward then cursorPosition.column + 1 else cursorPosition.column - 1
     cursorText = editor.getTextInBufferRange([[cursorPosition.row, col], cursorPosition])
 
+    if /[\u3001-\u303F・ー]/.test(cursorText)
+      # punctuations, symbols, etc.
+      # [、-〿・ー]
+      return /[\u3001-\u303F]+/g
     if /[\u3041-\u309E]/.test(cursorText)
-      #Hiragana
+      # Hiragana
+      # [ぁ-ゞ]
       return /[\u3041-\u309E]+/g
-    else if /[\u30A1-\u30FAーヽヾ]/.test(cursorText)
+    else if /[\u30A1-\u30FAヽヾ]/.test(cursorText)
       # Katakana
-      return /[\u30A1-\u30FAーヽヾ]+/g
+      # [ァ-ヺヽヾ]
+      return /[\u30A1-\u30FAヽヾ]+/g
     else if /[\uFF66-\uFF9F]/.test(cursorText)
       # half-width Katakana
+      # [ｦ-ﾟ]
       return /[\uFF66-\uFF9F]+/g
     else if /(?:[々〇〻\u3400-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF])/.test(cursorText)
       # Kanji
@@ -74,7 +81,7 @@ module.exports = JapaneseWordSelection =
       return options.wordRegex
     else
       regex = cursor.wordRegExp(options).source
-      regex = regex.replace(/\[\^/, '[^\u3041-\u309E\u30A1-\u30FAーヽヾ\uFF66-\uFF9F々〇〻\\u3400-\\u9FFF\\uF900-\\uFAFF\\uD840-\\uD87F\\uDC00-\\uDFFF')
+      regex = regex.replace(/\[\^/, '[^\u3001-\u303F・ー\u3041-\u309E\u30A1-\u30FAヽヾ\uFF66-\uFF9F々〇〻\\u3400-\\u9FFF\\uF900-\\uFAFF\\uD840-\\uD87F\\uDC00-\\uDFFF')
       return RegExp(regex, "g")
 
   deactivate: ->
