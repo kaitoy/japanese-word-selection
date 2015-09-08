@@ -58,7 +58,7 @@ module.exports = JapaneseWordSelection =
     col = if forward then cursorPosition.column + 1 else cursorPosition.column - 1
     cursorText = editor.getTextInBufferRange([[cursorPosition.row, col], cursorPosition])
 
-    if /[\u3001-\u303F・ー]/.test(cursorText)
+    if /[\u3001-\u303F・]/.test(cursorText)
       # punctuations, symbols, etc.
       # [、-〿・ー]
       return /[\u3001-\u303F]+/g
@@ -66,10 +66,10 @@ module.exports = JapaneseWordSelection =
       # Hiragana
       # [ぁ-ゞ]
       return /[\u3041-\u309E]+/g
-    else if /[\u30A1-\u30FAヽヾ]/.test(cursorText)
+    else if /[\u30A1-\u30FAヽヾー]/.test(cursorText)
       # Katakana
-      # [ァ-ヺヽヾ]
-      return /[\u30A1-\u30FAヽヾ]+/g
+      # [ァ-ヺヽヾー]
+      return /[\u30A1-\u30FAヽヾー]+/g
     else if /[\uFF66-\uFF9F]/.test(cursorText)
       # half-width Katakana
       # [ｦ-ﾟ]

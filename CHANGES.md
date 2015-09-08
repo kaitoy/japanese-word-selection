@@ -1,3 +1,7 @@
+0.2.1
+====
+* Improve handling for "ー".
+
 0.2.0
 ====
 * Fix a bug where japanizing word boundary is not done on cursors added after a text editor is opened.

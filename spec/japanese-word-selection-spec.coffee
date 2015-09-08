@@ -21,6 +21,7 @@ describe 'JapaneseWordSelection', ->
                             ホゲ・Hoge・ホゲ
                             穂毛。Hoge。穂毛
                             ほげ「Hoge」ほげ
+                            hogeホーゲーほげ
                             ''')
 
   describe 'Hiragana-Katakana-Hiragana', ->
@@ -465,6 +466,57 @@ describe 'JapaneseWordSelection', ->
       editor.moveRight(7)
       editor.selectToBeginningOfWord()
       expect(editor.getSelectedText() ).toEqual('Hoge')
+
+    it 'selects the second ほげ from the left edge', ->
+      editor.moveRight(8)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the second ほげ from the middle of it', ->
+      editor.moveRight(9)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the second Hほげ from the right edge', ->
+      editor.moveRight(10)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+  describe 'hogeホーゲーほげ', ->
+    beforeEach ->
+      runs ->
+        editor.moveToTop()
+        editor.moveDown(9)
+        editor.moveToBeginningOfLine()
+
+    it 'selects the first ほげ from the left edge', ->
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('hoge')
+
+    it 'selects the first ほげ from the middle of it', ->
+      editor.moveRight(2)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('hoge')
+
+    it 'selects the first ほげ from the right edge', ->
+      editor.moveRight(4)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('hoge')
+
+    it 'selects the Hoge from the left edge', ->
+      editor.moveRight(4)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ホーゲー')
+
+    it 'selects the Hoge from the middle of it', ->
+      editor.moveRight(5)
+      editor.selectWordsContainingCursors()
+      expect(editor.getSelectedText() ).toEqual('ホーゲー')
+
+    it 'selects the Hoge from the right edge', ->
+      editor.moveRight(8)
+      editor.selectToBeginningOfWord()
+      expect(editor.getSelectedText() ).toEqual('ホーゲー')
 
     it 'selects the second ほげ from the left edge', ->
       editor.moveRight(8)
