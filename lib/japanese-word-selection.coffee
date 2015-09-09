@@ -2,13 +2,34 @@
 
 module.exports = JapaneseWordSelection =
 
-  disposables: null
+  # Regex string for punctuations, symbols, etc.
+  # [、-〿・]
+  _punctuationsRegexStr: '[\\u3001-\\u303F・]'
+
+  # Regex string for Hiragana
+  # [ぁ-ゞ]
+  _hiraganaRegexStr: '[\\u3041-\\u309E]'
+
+  # Regex string for Katakana
+  # [ァ-ヺヽヾー]
+  _katakanaRegexStr: '[\\u30A1-\\u30FAヽヾー]'
+
+  # Regex string for half-width Katakana
+  # [ｦ-ﾟ]
+  _halfWidthKatakanaRegexStr: '[\\uFF66-\\uFF9F]'
+
+  # Regex string for Kanji
+  _kanjiRegexStr: '(?:[々〇〻\\u3400-\\u9FFF\\uF900-\\uFAFF]|[\\uD840-\\uD87F][\\uDC00-\\uDFFF])'
+
+  _japaneseChars: null
+
+  _disposables: new CompositeDisposable
 
   activate: ->
-    @disposables = new CompositeDisposable
-    @disposables.add atom.workspace.observeTextEditors (editor) ->
-      JapaneseWordSelection.disposables.add editor.observeCursors (cursor) ->
-        JapaneseWordSelection.japanizeWordBoundary(cursor)
+    @_japaneseChars = (@_punctuationsRegexStr + @_hiraganaRegexStr + @_katakanaRegexStr + @_halfWidthKatakanaRegexStr + @_kanjiRegexStr).replace(/\(|\?|:|\[|\||\]|\)/g, '')
+    @_disposables.add atom.workspace.observeTextEditors (editor) =>
+      @_disposables.add editor.observeCursors (cursor) =>
+        @japanizeWordBoundary(cursor)
 
   japanizeWordBoundary: (cursor) ->
     cursor.orgGetBeginningOfCurrentWordBufferPosition = cursor.getBeginningOfCurrentWordBufferPosition
@@ -18,7 +39,7 @@ module.exports = JapaneseWordSelection =
       previousNonBlankRow = @editor.buffer.previousNonBlankRow(currentBufferPosition.row) ? 0
       scanRange = [[previousNonBlankRow, 0], currentBufferPosition]
 
-      regex = JapaneseWordSelection.getRegex(@editor, @, options, false)
+      regex = JapaneseWordSelection.getRegex(@, options, false)
       beginningOfWordPosition = null
       @editor.backwardsScanInBufferRange regex, scanRange, ({range, stop}) ->
         if range.end.isGreaterThanOrEqual(currentBufferPosition) or allowPrevious
@@ -39,7 +60,7 @@ module.exports = JapaneseWordSelection =
       currentBufferPosition = @getBufferPosition()
       scanRange = [currentBufferPosition, @editor.getEofBufferPosition()]
 
-      regex = JapaneseWordSelection.getRegex(@editor, @, options, true)
+      regex = JapaneseWordSelection.getRegex(@, options, true)
       endOfWordPosition = null
       @editor.scanInBufferRange regex, scanRange, ({range, stop}) ->
         if allowNext
@@ -53,41 +74,42 @@ module.exports = JapaneseWordSelection =
 
       endOfWordPosition ? currentBufferPosition
 
-  getRegex: (editor, cursor, options, forward) ->
+  getRegex: (cursor, options, forward) ->
     cursorPosition = cursor.getBufferPosition()
     col = if forward then cursorPosition.column + 1 else cursorPosition.column - 1
-    cursorText = editor.getTextInBufferRange([[cursorPosition.row, col], cursorPosition])
+    cursorText = cursor.editor.getTextInBufferRange([[cursorPosition.row, col], cursorPosition])
 
-    if /[\u3001-\u303F・]/.test(cursorText)
-      # punctuations, symbols, etc.
-      # [、-〿・ー]
-      return /[\u3001-\u303F]+/g
-    if /[\u3041-\u309E]/.test(cursorText)
-      # Hiragana
-      # [ぁ-ゞ]
-      return /[\u3041-\u309E]+/g
-    else if /[\u30A1-\u30FAヽヾー]/.test(cursorText)
-      # Katakana
-      # [ァ-ヺヽヾー]
-      return /[\u30A1-\u30FAヽヾー]+/g
-    else if /[\uFF66-\uFF9F]/.test(cursorText)
-      # half-width Katakana
-      # [ｦ-ﾟ]
-      return /[\uFF66-\uFF9F]+/g
-    else if /(?:[々〇〻\u3400-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF])/.test(cursorText)
-      # Kanji
-      return /(?:[々〇〻\u3400-\u9FFF\uF900-\uFAFF]|[\uD840-\uD87F][\uDC00-\uDFFF])+/g
-    else if options.wordRegex?
+    punctuationsRegex = new RegExp(@_punctuationsRegexStr + '+')
+    if punctuationsRegex.test(cursorText)
+      return punctuationsRegex
+
+    hiraganaRegex = new RegExp(@_hiraganaRegexStr + '+')
+    if hiraganaRegex.test(cursorText)
+      return hiraganaRegex
+
+    katakanaRegex = new RegExp(@_katakanaRegexStr + '+')
+    if katakanaRegex.test(cursorText)
+      return katakanaRegex
+
+    halfWidthKatakanaRegex = new RegExp(@_halfWidthKatakanaRegexStr + '+')
+    if halfWidthKatakanaRegex.test(cursorText)
+      return halfWidthKatakanaRegex
+
+    kanjiRegex = new RegExp(@_kanjiRegexStr + '+')
+    if kanjiRegex.test(cursorText)
+      return kanjiRegex
+
+    if options.wordRegex?
       return options.wordRegex
-    else
-      regex = cursor.wordRegExp(options).source
-      regex = regex.replace(/\[\^/, '[^\u3001-\u303F・ー\u3041-\u309E\u30A1-\u30FAヽヾ\uFF66-\uFF9F々〇〻\\u3400-\\u9FFF\\uF900-\\uFAFF\\uD840-\\uD87F\\uDC00-\\uDFFF')
-      return RegExp(regex, "g")
+
+    regex = cursor.wordRegExp(options).source
+    regex = regex.replace(/\[\^/, "[^#{@_japaneseChars}")
+    return RegExp(regex, 'g')
 
   deactivate: ->
-    @disposables.dispose()
-    for i, editor of atom.workspace.getTextEditors()
-      for j, cursor of editor.getCursors()
+    @_disposables.dispose()
+    for editor in atom.workspace.getTextEditors()
+      for cursor in editor.getCursors()
         if cursor.orgGetBeginningOfCurrentWordBufferPosition?
           cursor.getBeginningOfCurrentWordBufferPosition = cursor.orgGetBeginningOfCurrentWordBufferPosition
           delete cursor.orgGetBeginningOfCurrentWordBufferPosition
