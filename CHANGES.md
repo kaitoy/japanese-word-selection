@@ -1,6 +1,6 @@
 0.3.1
 =====
-* Fix the issue #1: ・（中黒）があると先頭行、または、次の行末に移動する
+* Fix the [issue #1](https://github.com/kaitoy/japanese-word-selection/issues/1): ・（中黒）があると先頭行、または、次の行末に移動する
 
 0.2.1
 ====
