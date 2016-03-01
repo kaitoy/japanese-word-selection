@@ -3,8 +3,8 @@
 module.exports = JapaneseWordSelection =
 
   # Regex string for punctuations, symbols, etc.
-  # [、-〿・]
-  _punctuationsRegexStr: '[\\u3001-\\u303F・]'
+  # [、-〿・○■□▼▽△▲]
+  _punctuationsRegexStr: '[\\u3001-\\u303F・○■□▼▽△▲]'
 
   # Regex string for Hiragana
   # [ぁ-ゞ]

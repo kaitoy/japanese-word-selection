@@ -22,6 +22,7 @@ describe 'JapaneseWordSelection', ->
                             穂毛。Hoge。穂毛
                             ほげ「Hoge」ほげ
                             hogeホーゲーほげ
+                            □ほげ▼hoge■ホゲ
                             ''')
 
   describe 'Hiragana-Katakana-Hiragana', ->
@@ -532,3 +533,39 @@ describe 'JapaneseWordSelection', ->
       editor.moveRight(10)
       editor.selectToBeginningOfWord()
       expect(editor.getSelectedText() ).toEqual('ほげ')
+
+  describe '□ほげ▼hoge■ホゲ', ->
+    beforeEach ->
+      runs ->
+        editor.moveToTop()
+        editor.moveDown(10)
+        editor.moveToBeginningOfLine()
+
+    it 'selects the □ from its left edge', ->
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('□')
+
+    it 'selects the ほげ from its left edge', ->
+      editor.moveRight(1)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ほげ')
+
+    it 'selects the ▼ from its left edge', ->
+      editor.moveRight(3)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('▼')
+
+    it 'selects the hoge from its left edge', ->
+      editor.moveRight(4)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('hoge')
+
+    it 'selects the ■ from its left edge', ->
+      editor.moveRight(8)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('■')
+
+    it 'selects the ホゲ from its left edge', ->
+      editor.moveRight(9)
+      editor.selectToEndOfWord()
+      expect(editor.getSelectedText() ).toEqual('ホゲ')
