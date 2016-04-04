@@ -33,46 +33,14 @@ module.exports = JapaneseWordSelection =
 
   japanizeWordBoundary: (cursor) ->
     cursor.orgGetBeginningOfCurrentWordBufferPosition = cursor.getBeginningOfCurrentWordBufferPosition
-    cursor.getBeginningOfCurrentWordBufferPosition =  (options = {}) ->
-      allowPrevious = options.allowPrevious ? true
-      currentBufferPosition = @getBufferPosition()
-      previousNonBlankRow = @editor.buffer.previousNonBlankRow(currentBufferPosition.row) ? 0
-      scanRange = [[previousNonBlankRow, 0], currentBufferPosition]
-
-      regex = JapaneseWordSelection.getRegex(@, options, false)
-      beginningOfWordPosition = null
-      @editor.backwardsScanInBufferRange regex, scanRange, ({range, stop}) ->
-        if range.end.isGreaterThanOrEqual(currentBufferPosition) or allowPrevious
-          beginningOfWordPosition = range.start
-        if not beginningOfWordPosition?.isEqual(currentBufferPosition)
-          stop()
-
-      if beginningOfWordPosition?
-        beginningOfWordPosition
-      else if allowPrevious
-        new Point(0, 0)
-      else
-        currentBufferPosition
+    cursor.getBeginningOfCurrentWordBufferPosition = (options = {}) ->
+      options.wordRegex = JapaneseWordSelection.getRegex @, options, false
+      @.orgGetBeginningOfCurrentWordBufferPosition options
 
     cursor.orgGetEndOfCurrentWordBufferPosition = cursor.getEndOfCurrentWordBufferPosition
-    cursor.getEndOfCurrentWordBufferPosition =  (options = {}) ->
-      allowNext = options.allowNext ? true
-      currentBufferPosition = @getBufferPosition()
-      scanRange = [currentBufferPosition, @editor.getEofBufferPosition()]
-
-      regex = JapaneseWordSelection.getRegex(@, options, true)
-      endOfWordPosition = null
-      @editor.scanInBufferRange regex, scanRange, ({range, stop}) ->
-        if allowNext
-          if range.end.isGreaterThan(currentBufferPosition)
-            endOfWordPosition = range.end
-            stop()
-        else
-          if range.start.isLessThanOrEqual(currentBufferPosition)
-            endOfWordPosition = range.end
-          stop()
-
-      endOfWordPosition ? currentBufferPosition
+    cursor.getEndOfCurrentWordBufferPosition = (options = {}) ->
+      options.wordRegex = JapaneseWordSelection.getRegex @, options, true
+      @.orgGetEndOfCurrentWordBufferPosition options
 
   getRegex: (cursor, options, forward) ->
     cursorPosition = cursor.getBufferPosition()
