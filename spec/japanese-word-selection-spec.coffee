@@ -12,18 +12,18 @@ describe 'JapaneseWordSelection', ->
 
     runs ->
       editor.insertText('''
-                            ああああホゲんんんん
-                            ああああﾎｹﾞんんんん
-                            ああああ穂毛んんんん
-                            ああああhogeんんんん
-                            ああああ1234んんんん
-                            ほげ、Hoge、ほげ
-                            ホゲ・Hoge・ホゲ
-                            穂毛。Hoge。穂毛
-                            ほげ「Hoge」ほげ
-                            hogeホーゲーほげ
-                            □ほげ▼hoge■ホゲ
-                            ''')
+        ああああホゲんんんん
+        ああああﾎｹﾞんんんん
+        ああああ穂毛んんんん
+        ああああhogeんんんん
+        ああああ1234んんんん
+        ほげ、Hoge、ほげ
+        ホゲ・Hoge・ホゲ
+        穂毛。Hoge。穂毛
+        ほげ「Hoge」ほげ
+        hogeホーゲーほげ
+        □ほげ▼hoge■ホゲ
+      ''')
 
   describe 'Hiragana-Katakana-Hiragana', ->
     beforeEach ->
