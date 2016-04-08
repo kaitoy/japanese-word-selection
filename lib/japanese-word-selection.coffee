@@ -1,4 +1,4 @@
-{CompositeDisposable, Point} = require 'atom'
+{CompositeDisposable, Point, Range} = require 'atom'
 
 module.exports = JapaneseWordSelection =
 
@@ -43,28 +43,47 @@ module.exports = JapaneseWordSelection =
       @.orgGetEndOfCurrentWordBufferPosition options
 
   getRegex: (cursor, options, forward) ->
-    cursorPosition = cursor.getBufferPosition()
-    col = if forward then cursorPosition.column + 1 else cursorPosition.column - 1
-    cursorText = cursor.editor.getTextInBufferRange([[cursorPosition.row, col], cursorPosition])
+    curPos = cursor.getBufferPosition()
+    editor = cursor.editor
+    targetChar = null
+    if forward
+      nextLine = editor.lineTextForBufferRow curPos.row + 1
+      if nextLine?
+        range = new Range curPos, [curPos.row + 1, nextLine.length - 1]
+      else
+        currentLine = editor.lineTextForBufferRow curPos.row
+        range = new Range curPos, [curPos.row, currentLine.length - 1]
+      editor.scanInBufferRange new RegExp('\\S'), range, ({matchText, stop}) ->
+        targetChar = matchText
+        stop()
+    else
+      if curPos.row == 0
+        range = new Range [curPos.row, 0], curPos
+      else
+        range = new Range [curPos.row - 1, 0], curPos
+      editor.backwardsScanInBufferRange new RegExp('\\S'), range, ({matchText, stop}) ->
+        targetChar = matchText
+        stop()
+    return options.wordRegex if not targetChar?
 
     punctuationsRegex = new RegExp(@_punctuationsRegexStr + '+')
-    if punctuationsRegex.test(cursorText)
+    if punctuationsRegex.test(targetChar)
       return punctuationsRegex
 
     hiraganaRegex = new RegExp(@_hiraganaRegexStr + '+')
-    if hiraganaRegex.test(cursorText)
+    if hiraganaRegex.test(targetChar)
       return hiraganaRegex
 
     katakanaRegex = new RegExp(@_katakanaRegexStr + '+')
-    if katakanaRegex.test(cursorText)
+    if katakanaRegex.test(targetChar)
       return katakanaRegex
 
     halfWidthKatakanaRegex = new RegExp(@_halfWidthKatakanaRegexStr + '+')
-    if halfWidthKatakanaRegex.test(cursorText)
+    if halfWidthKatakanaRegex.test(targetChar)
       return halfWidthKatakanaRegex
 
     kanjiRegex = new RegExp(@_kanjiRegexStr + '+')
-    if kanjiRegex.test(cursorText)
+    if kanjiRegex.test(targetChar)
       return kanjiRegex
 
     if options.wordRegex?

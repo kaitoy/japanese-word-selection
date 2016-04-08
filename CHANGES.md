@@ -1,6 +1,7 @@
 0.4.0
 =====
 * Support ○■□▼▽△▲ ([issue #2](https://github.com/kaitoy/japanese-word-selection/issues/2)).
+* Improve the behavior around spaces, tabs, and new lines ([issue #3](https://github.com/kaitoy/japanese-word-selection/issues/3)).
 
 0.3.1
 =====
