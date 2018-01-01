@@ -1,4 +1,7 @@
-0.4.0
+0.5.0
+=====
+* Fix to work with Atom 1.23.
+
 =====
 * Support ○■□▼▽△▲ ([issue #2](https://github.com/kaitoy/japanese-word-selection/issues/2)).
 * Improve the behavior around spaces, tabs, and new lines ([issue #3](https://github.com/kaitoy/japanese-word-selection/issues/3)).

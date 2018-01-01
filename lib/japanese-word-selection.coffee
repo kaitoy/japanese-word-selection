@@ -1,4 +1,4 @@
-{CompositeDisposable, Point, Range} = require 'atom'
+{CompositeDisposable, Range} = require 'atom'
 
 module.exports = JapaneseWordSelection =
 
@@ -35,12 +35,17 @@ module.exports = JapaneseWordSelection =
     cursor.orgGetBeginningOfCurrentWordBufferPosition = cursor.getBeginningOfCurrentWordBufferPosition
     cursor.getBeginningOfCurrentWordBufferPosition = (options = {}) ->
       options.wordRegex = JapaneseWordSelection.getRegex @, options, false
-      @.orgGetBeginningOfCurrentWordBufferPosition options
+      @orgGetBeginningOfCurrentWordBufferPosition options
 
     cursor.orgGetEndOfCurrentWordBufferPosition = cursor.getEndOfCurrentWordBufferPosition
     cursor.getEndOfCurrentWordBufferPosition = (options = {}) ->
       options.wordRegex = JapaneseWordSelection.getRegex @, options, true
-      @.orgGetEndOfCurrentWordBufferPosition options
+      @orgGetEndOfCurrentWordBufferPosition options
+
+    cursor.orgGetCurrentWordBufferRange = cursor.getCurrentWordBufferRange
+    cursor.getCurrentWordBufferRange = (options = {}) ->
+      options.wordRegex = JapaneseWordSelection.getRegex @, options, true
+      @orgGetCurrentWordBufferRange options
 
   getRegex: (cursor, options, forward) ->
     curPos = cursor.getBufferPosition()
