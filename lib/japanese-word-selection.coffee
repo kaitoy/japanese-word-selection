@@ -107,3 +107,5 @@ module.exports = JapaneseWordSelection =
           delete cursor.orgGetBeginningOfCurrentWordBufferPosition
           cursor.getEndOfCurrentWordBufferPosition = cursor.orgGetEndOfCurrentWordBufferPosition
           delete cursor.orgGetEndOfCurrentWordBufferPosition
+          cursor.getCurrentWordBufferRange = cursor.orgGetCurrentWordBufferRange
+          delete cursor.orgGetCurrentWordBufferRange

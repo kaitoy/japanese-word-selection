@@ -1,3 +1,7 @@
+0.5.1
+=====
+* Fix to restore Cursor#getCurrentWordBufferRange() when deactivation.
+
 0.5.0
 =====
 * Fix to work with Atom 1.23.
